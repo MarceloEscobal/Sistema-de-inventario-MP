@@ -1530,130 +1530,6 @@ function BienesModule({ userRole }: { userRole: "admin" | "user" }) {
   )
 }
 
-function InventarioUsuarioModule() {
-  const [bienes] = useState([
-    {
-      id: "MP001234",
-      codigoPatrimonial: "112228220002",
-      codigoBarra: "112228220002",
-      descripcion: "Laptop Dell Inspiron 15",
-      marca: "Dell",
-      modelo: "Inspiron 15 3000",
-      serie: "DL123456789",
-      estado: "Bueno",
-      ubicacionFisica: "Oficina 201",
-      responsable: "Juan Pérez",
-      usuarioFinal: "Juan Pérez",
-      centro: "Sede Principal",
-      sede: "SEDE PRINCIPAL",
-      centroCosto: "01.06-PRINCIPAL",
-      valor: 2500.0,
-      fechaIngreso: "2024-01-15",
-    },
-    {
-      id: "MP001235",
-      codigoPatrimonial: "112228220003",
-      codigoBarra: "112228220003",
-      descripcion: "Impresora HP LaserJet",
-      marca: "HP",
-      modelo: "LaserJet Pro M404n",
-      serie: "HP987654321",
-      estado: "Regular",
-      ubicacionFisica: "Oficina 105",
-      responsable: "María García",
-      usuarioFinal: "María García",
-      centro: "Sede Norte",
-      sede: "SEDE NORTE",
-      centroCosto: "02.06-NORTE",
-      valor: 800.0,
-      fechaIngreso: "2024-01-10",
-    },
-  ])
-
-  const [filtroCodigoPatrimonial, setFiltroCodigoPatrimonial] = useState("")
-
-  // Filtrar bienes por código patrimonial
-  const bienesFiltrados = bienes.filter(
-    (bien) =>
-      filtroCodigoPatrimonial === "" ||
-      bien.codigoPatrimonial.toLowerCase().includes(filtroCodigoPatrimonial.toLowerCase()),
-  )
-
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center gap-4">
-        <h2 className="text-2xl font-bold text-gray-900">Inventario</h2>
-        <div className="flex items-center gap-2">
-          <Label htmlFor="filtroPatrimonial">Filtrar por Código Patrimonial:</Label>
-          <Input
-            id="filtroPatrimonial"
-            type="text"
-            placeholder="Ingrese código de 12 dígitos"
-            value={filtroCodigoPatrimonial}
-            onChange={(e) => setFiltroCodigoPatrimonial(e.target.value)}
-            className="w-64"
-            maxLength={12}
-          />
-        </div>
-      </div>
-
-      {/* Lista de bienes solo lectura */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Lista de Bienes Patrimoniales</CardTitle>
-          <CardDescription>Consulta del inventario de bienes del Ministerio Público</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left p-2 font-medium">Código</th>
-                  <th className="text-left p-2 font-medium">Descripción</th>
-                  <th className="text-left p-2 font-medium">Marca/Modelo</th>
-                  <th className="text-left p-2 font-medium">Serie</th>
-                  <th className="text-left p-2 font-medium">Estado</th>
-                  <th className="text-left p-2 font-medium">Responsable</th>
-                  <th className="text-left p-2 font-medium">Centro</th>
-                  <th className="text-left p-2 font-medium">Valor</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bienesFiltrados.map((bien) => (
-                  <tr key={bien.id} className="border-b hover:bg-gray-50">
-                    <td className="p-2 font-mono text-sm">{bien.codigoPatrimonial}</td>
-                    <td className="p-2">{bien.descripcion}</td>
-                    <td className="p-2">
-                      {bien.marca} {bien.modelo}
-                    </td>
-                    <td className="p-2 font-mono text-sm">{bien.serie}</td>
-                    <td className="p-2">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${
-                          bien.estado === "Bueno"
-                            ? "bg-green-100 text-green-800"
-                            : bien.estado === "Regular"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {bien.estado}
-                      </span>
-                    </td>
-                    <td className="p-2">{bien.responsable}</td>
-                    <td className="p-2">{bien.centro}</td>
-                    <td className="p-2">S/ {bien.valor.toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  )
-}
-
 function PersonalModule() {
   const [personal, setPersonal] = useState([
     {
@@ -2914,6 +2790,19 @@ function CentrosModule() {
   )
 }
 
+function UbicacionModule() {
+  return (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-gray-900">Ubicación Física</h2>
+      <Card>
+        <CardContent className="p-6">
+          <p className="text-gray-600">Módulo de ubicación física en desarrollo...</p>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
 function ReportesModule({ userRole }: { userRole: "admin" | "user" }) {
   const [reportes, setReportes] = useState([
     {
@@ -3176,949 +3065,965 @@ function ImportarModule() {
 }
 
 function InventarioModule() {
-// Estados para los controles del formulario
-const [añoInventario, setAñoInventario] = useState("2024")
-const [numeroInventario, setNumeroInventario] = useState("INVENTARIO DE BIENES MUEBLES PATRIMONIO")
-const [tipoInventario, setTipoInventario] = useState("OTROS")
-const [tipoRegistro, setTipoRegistro] = useState("Institucional")
-const [fechaRegistro] = useState("23/6/2025") // No editable
-const [filtrarPor, setFiltrarPor] = useState("Descripción")
-const [valorBusqueda, setValorBusqueda] = useState("")
+  // Estados para los controles del formulario
+  const [añoInventario, setAñoInventario] = useState("2024")
+  const [numeroInventario, setNumeroInventario] = useState("INVENTARIO DE BIENES MUEBLES PATRIMONIO")
+  const [tipoInventario, setTipoInventario] = useState("OTROS")
+  const [tipoRegistro, setTipoRegistro] = useState("Institucional")
+  const [fechaRegistro] = useState("23/6/2025") // No editable
+  const [filtrarPor, setFiltrarPor] = useState("Descripción")
+  const [valorBusqueda, setValorBusqueda] = useState("")
 
-// Estados para paginación
-const [paginaActual, setPaginaActual] = useState(1)
-const itemsPorPagina = 10
+  // Estados para paginación
+  const [paginaActual, setPaginaActual] = useState(1)
+  const itemsPorPagina = 10
 
-// Estado para el modal de activo fijo
-const [showActivoFijoModal, setShowActivoFijoModal] = useState(false)
-const [activoSeleccionado, setActivoSeleccionado] = useState<any>(null)
+  // Estado para el modal de activo fijo
+  const [showActivoFijoModal, setShowActivoFijoModal] = useState(false)
+  const [activoSeleccionado, setActivoSeleccionado] = useState<any>(null)
 
-// Estado para el modal de registrar inventario
-const [showRegistrarInventarioModal, setShowRegistrarInventarioModal] = useState(false)
-const [formRegistrarInventario, setFormRegistrarInventario] = useState({
-  numero: "",
-  fecha: new Date().toLocaleDateString("es-ES"),
-  nombre: "",
-  tipoInventario: "PRESENTACION ANUAL",
-})
-
-// Generar años desde 2015 hasta el año actual
-const añosDisponibles = []
-const añoActual = new Date().getFullYear()
-for (let año = añoActual; año >= 2015; año--) {
-  añosDisponibles.push(año.toString())
-}
-
-// Opciones para tipo de registro según la imagen
-const tiposRegistro = [
-  "Institucional",
-  "No institucional - Bienes cedidos en uso",
-  "No institucional - Bienes en Comodato",
-  "No institucional - Bienes en Afectación en Uso",
-  "No institucional - Bienes Alquilados",
-  "No institucionales - Bienes incautados",
-]
-
-// Opciones para filtrar por según la imagen
-const opcionesFiltro = ["Descripción", "Sede", "Código", "Centro de Costo", "Ubicación", "Tipo de Verificación"]
-
-// Datos de ejemplo de activos (simulando 50 registros para 5 páginas)
-const todosLosActivos = []
-for (let i = 1; i <= 50; i++) {
-  todosLosActivos.push({
-    item: i,
-    codigoPatrimonial: `11223${String(i).padStart(7, "0")}`,
-    codigoBarraInvAnterior: `P${String(14253 + i).padStart(5, "0")}`,
-    descripcion:
-      i === 1
-        ? "DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL"
-        : i <= 10
-          ? `EQUIPO DE AIRE ACONDICIONADO DE PRECISION 24000 BTU - UNIDAD ${i - 1}`
-          : `EQUIPO DE OFICINA TIPO ${i}`,
-    tipoVerif: "F",
-  })
-}
-
-// Filtrar activos según el criterio seleccionado
-const activosFiltrados = todosLosActivos.filter((activo) => {
-  if (!valorBusqueda) return true
-
-  switch (filtrarPor) {
-    case "Descripción":
-      return activo.descripcion.toLowerCase().includes(valorBusqueda.toLowerCase())
-    case "Código":
-      return activo.codigoPatrimonial.includes(valorBusqueda)
-    default:
-      return activo.descripcion.toLowerCase().includes(valorBusqueda.toLowerCase())
-  }
-})
-
-// Calcular paginación
-const totalPaginas = Math.ceil(activosFiltrados.length / itemsPorPagina)
-const indiceInicio = (paginaActual - 1) * itemsPorPagina
-const indiceFin = indiceInicio + itemsPorPagina
-const activosPaginados = activosFiltrados.slice(indiceInicio, indiceFin)
-
-const abrirModalActivoFijo = (activo: any) => {
-  setActivoSeleccionado(activo)
-  setShowActivoFijoModal(true)
-}
-
-// Add new state for the seleccionar inventario modal
-const [showSeleccionarInventarioModal, setShowSeleccionarInventarioModal] = useState(false)
-const [formSeleccionarInventario, setFormSeleccionarInventario] = useState({
-  año: "2024",
-  numeroInventario: "INVENTARIO DE BIENES MUEBLES PATRIMONIO",
-  fechaRegistro: "17/01/2025",
-  tipoInventario: "OTROS",
-  tipoRegistro: "Institucional",
-  busqueda: "Descripción",
-  terminoBusqueda: "",
-  todosVerifFisica: false,
-  todosVerifDigital: false,
-})
-
-// Sample data for the inventory selection table
-const [inventarioItems, setInventarioItems] = useState([
-  {
-    id: 1,
-    codigoPatrimonial: "112228220002",
-    codigoBarra: "P14253",
-    descripcion: "DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL",
-    sede: "ARCHIVO CENTRAL",
-    centroCosto: "01.06-ARCHIVO",
-    ubicacion: "2004-ARCHIVO - PISO 2",
-    responsable: "GUERRERO ESCOBEDO JHONY GERHARD",
-    verifFisica: false,
-    verifDigital: false,
-    selected: false,
-  },
-  {
-    id: 2,
-    codigoPatrimonial: "112233360001",
-    codigoBarra: "000353",
-    descripcion: "EQUIPO DE AIRE ACONDICIONADO DE PRECISION 24000 BTU",
-    sede: "ASCOPE",
-    centroCosto: "02.06-ASCOPE",
-    ubicacion: "OFICINA 100",
-    responsable: "MARIA RODRIGUEZ SILVA",
-    verifFisica: false,
-    verifDigital: false,
-    selected: false,
-  },
-  // Add more sample items as needed
-])
-
-// Generate years from current year back to 2010
-const añosSeleccionarInventario = []
-for (let año = añoActual; año >= 2010; año--) {
-  añosSeleccionarInventario.push(año.toString())
-}
-
-const seleccionarInventario = () => {
-  setShowSeleccionarInventarioModal(true)
-}
-
-const handleInputSeleccionarInventario = (field: string, value: string | boolean) => {
-  setFormSeleccionarInventario({ ...formSeleccionarInventario, [field]: value })
-}
-
-const handleTodosVerifFisica = (checked: boolean) => {
-  setFormSeleccionarInventario({ 
-    ...formSeleccionarInventario, 
-    todosVerifFisica: checked,
-    todosVerifDigital: checked ? false : formSeleccionarInventario.todosVerifDigital
-  })
-  
-  // Update all items
-  setInventarioItems(items => 
-    items.map(item => ({
-      ...item,
-      verifFisica: checked,
-      verifDigital: checked ? false : item.verifDigital
-    }))
-  )
-}
-
-const handleTodosVerifDigital = (checked: boolean) => {
-  setFormSeleccionarInventario({ 
-    ...formSeleccionarInventario, 
-    todosVerifDigital: checked,
-    todosVerifFisica: checked ? false : formSeleccionarInventario.todosVerifFisica
-  })
-  
-  // Update all items
-  setInventarioItems(items => 
-    items.map(item => ({
-      ...item,
-      verifDigital: checked,
-      verifFisica: checked ? false : item.verifFisica
-    }))
-  )
-}
-
-const handleItemVerifFisica = (itemId: number, checked: boolean) => {
-  setInventarioItems(items => 
-    items.map(item => 
-      item.id === itemId 
-        ? { ...item, verifFisica: checked, verifDigital: checked ? false : item.verifDigital }
-        : item
-    )
-  )
-}
-
-const handleItemVerifDigital = (itemId: number, checked: boolean) => {
-  setInventarioItems(items => 
-    items.map(item => 
-      item.id === itemId 
-        ? { ...item, verifDigital: checked, verifFisica: checked ? false : item.verifFisica }
-        : item
-    )
-  )
-}
-
-const registrarInventario = () => {
-  setShowRegistrarInventarioModal(true)
-}
-
-const handleRegistrarInventario = () => {
-  if (!formRegistrarInventario.numero || !formRegistrarInventario.nombre) {
-    alert("Por favor complete all the fields")
-    return
-  }
-  alert(`Inventario registrado: ${formRegistrarInventario.nombre}`)
-  setShowRegistrarInventarioModal(false)
-  setFormRegistrarInventario({
+  // Estado para el modal de registrar inventario
+  const [showRegistrarInventarioModal, setShowRegistrarInventarioModal] = useState(false)
+  const [formRegistrarInventario, setFormRegistrarInventario] = useState({
     numero: "",
     fecha: new Date().toLocaleDateString("es-ES"),
     nombre: "",
     tipoInventario: "PRESENTACION ANUAL",
   })
-}
 
-const handleInputRegistrarInventario = (field: string, value: string) => {
-  if (field === "numero") {
-    // Solo permitir números
-    const numeroValue = value.replace(/[^0-9]/g, "")
-    setFormRegistrarInventario({ ...formRegistrarInventario, [field]: numeroValue })
-  } else if (field === "nombre") {
-    // Solo permitir números y letras
-    const nombreValue = value.replace(/[^a-zA-Z0-9\s]/g, "")
-    setFormRegistrarInventario({ ...formRegistrarInventario, [field]: nombreValue })
-  } else {
-    setFormRegistrarInventario({ ...formRegistrarInventario, [field]: value })
+  // Generar años desde 2015 hasta el año actual
+  const añosDisponibles = []
+  const añoActual = new Date().getFullYear()
+  for (let año = añoActual; año >= 2015; año--) {
+    añosDisponibles.push(año.toString())
   }
-}
 
-const cambiarPagina = (nuevaPagina: number) => {
-  if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
-    setPaginaActual(nuevaPagina)
+  // Opciones para tipo de registro según la imagen
+  const tiposRegistro = [
+    "Institucional",
+    "No institucional - Bienes cedidos en uso",
+    "No institucional - Bienes en Comodato",
+    "No institucional - Bienes en Afectación en Uso",
+    "No institucional - Bienes Alquilados",
+    "No institucionales - Bienes incautados",
+  ]
+
+  // Opciones para filtrar por según la imagen
+  const opcionesFiltro = ["Descripción", "Sede", "Código", "Centro de Costo", "Ubicación", "Tipo de Verificación"]
+
+  // Datos de ejemplo de activos (simulando 50 registros para 5 páginas)
+  const todosLosActivos = []
+  for (let i = 1; i <= 50; i++) {
+    todosLosActivos.push({
+      item: i,
+      codigoPatrimonial: `11223${String(i).padStart(7, "0")}`,
+      codigoBarraInvAnterior: `P${String(14253 + i).padStart(5, "0")}`,
+      descripcion:
+        i === 1
+          ? "DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL"
+          : i <= 10
+            ? `EQUIPO DE AIRE ACONDICIONADO DE PRECISION 24000 BTU - UNIDAD ${i - 1}`
+            : `EQUIPO DE OFICINA TIPO ${i}`,
+      tipoVerif: "F",
+    })
   }
-}
 
-return (
-  <div className="space-y-6">
-    <div className="bg-blue-600 text-white p-2 text-sm">
-      Módulo de Patrimonio - Ejecutora: MINISTERIO PÚBLICO - GERENCIA ADMINISTRATIVA DE LA LIBERTAD
-    </div>
+  // Filtrar activos según el criterio seleccionado
+  const activosFiltrados = todosLosActivos.filter((activo) => {
+    if (!valorBusqueda) return true
 
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">Listado del Inventario Físico</h2>
+    switch (filtrarPor) {
+      case "Descripción":
+        return activo.descripcion.toLowerCase().includes(valorBusqueda.toLowerCase())
+      case "Código":
+        return activo.codigoPatrimonial.includes(valorBusqueda)
+      default:
+        return activo.descripcion.toLowerCase().includes(valorBusqueda.toLowerCase())
+    }
+  })
 
-      {/* Controles superiores */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div>
-          <Label>Año Inventario</Label>
-          <select
-            className="w-full border rounded px-3 py-2"
-            value={añoInventario}
-            onChange={(e) => setAñoInventario(e.target.value)}
-          >
-            {añosDisponibles.map((año) => (
-              <option key={año} value={año}>
-                {año}
-              </option>
-            ))}
-          </select>
-        </div>
+  // Calcular paginación
+  const totalPaginas = Math.ceil(activosFiltrados.length / itemsPorPagina)
+  const indiceInicio = (paginaActual - 1) * itemsPorPagina
+  const indiceFin = indiceInicio + itemsPorPagina
+  const activosPaginados = activosFiltrados.slice(indiceInicio, indiceFin)
 
-        <div>
-          <Label>Número Inventario</Label>
-          <select
-            className="w-full border rounded px-3 py-2"
-            value={numeroInventario}
-            onChange={(e) => setNumeroInventario(e.target.value)}
-          >
-            <option value="INVENTARIO DE BIENES MUEBLES PATRIMONIO">INVENTARIO DE BIENES MUEBLES PATRIMONIO</option>
-          </select>
-        </div>
+  const abrirModalActivoFijo = (activo: any) => {
+    setActivoSeleccionado(activo)
+    setShowActivoFijoModal(true)
+  }
 
-        <div>
-          <Label>Fecha Registro</Label>
-          <Input value={fechaRegistro} readOnly className="bg-gray-100" />
-        </div>
+  // Add new state for the seleccionar inventario modal
+  const [showSeleccionarInventarioModal, setShowSeleccionarInventarioModal] = useState(false)
+  const [formSeleccionarInventario, setFormSeleccionarInventario] = useState({
+    año: "2024",
+    numeroInventario: "INVENTARIO DE BIENES MUEBLES PATRIMONIO",
+    fechaRegistro: "17/01/2025",
+    tipoInventario: "OTROS",
+    tipoRegistro: "Institucional",
+    busqueda: "Descripción",
+    terminoBusqueda: "",
+    todosVerifFisica: false,
+    todosVerifDigital: false,
+  })
 
-        <div>
-          <Label>Tipo Inventario</Label>
-          <select
-            className="w-full border rounded px-3 py-2"
-            value={tipoInventario}
-            onChange={(e) => setTipoInventario(e.target.value)}
-          >
-            <option value="OTROS">OTROS</option>
-            <option value="PRESENTACION ANUAL">PRESENTACION ANUAL</option>
-          </select>
-        </div>
+  // Sample data for the inventory selection table
+  const [inventarioItems, setInventarioItems] = useState([
+    {
+      id: 1,
+      codigoPatrimonial: "112228220002",
+      codigoBarra: "P14253",
+      descripcion: "DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL",
+      sede: "ARCHIVO CENTRAL",
+      centroCosto: "01.06-ARCHIVO",
+      ubicacion: "2004-ARCHIVO - PISO 2",
+      responsable: "GUERRERO ESCOBEDO JHONY GERHARD",
+      verifFisica: false,
+      verifDigital: false,
+      selected: false,
+    },
+    {
+      id: 2,
+      codigoPatrimonial: "112233360001",
+      codigoBarra: "000353",
+      descripcion: "EQUIPO DE AIRE ACONDICIONADO DE PRECISION 24000 BTU",
+      sede: "ASCOPE",
+      centroCosto: "02.06-ASCOPE",
+      ubicacion: "OFICINA 100",
+      responsable: "MARIA RODRIGUEZ SILVA",
+      verifFisica: false,
+      verifDigital: false,
+      selected: false,
+    },
+    // Add more sample items as needed
+  ])
 
-        <div>
-          <Label>Tipo Registro</Label>
-          <select
-            className="w-full border rounded px-3 py-2"
-            value={tipoRegistro}
-            onChange={(e) => setTipoRegistro(e.target.value)}
-          >
-            {tiposRegistro.map((tipo) => (
-              <option key={tipo} value={tipo}>
-                {tipo}
-              </option>
-            ))}
-          </select>
-        </div>
+  // Generate years from current year back to 2010
+  const añosSeleccionarInventario = []
+  for (let año = añoActual; año >= 2010; año--) {
+    añosSeleccionarInventario.push(año.toString())
+  }
 
-        <div className="flex gap-2">
-          <Button onClick={seleccionarInventario} variant="outline">
-            Seleccionar Inventario
-          </Button>
-          <Button onClick={registrarInventario}>Registrar Inventario</Button>
-        </div>
+  const seleccionarInventario = () => {
+    setShowSeleccionarInventarioModal(true)
+  }
+
+  const handleInputSeleccionarInventario = (field: string, value: string | boolean) => {
+    setFormSeleccionarInventario({ ...formSeleccionarInventario, [field]: value })
+  }
+
+  const handleTodosVerifFisica = (checked: boolean) => {
+    setFormSeleccionarInventario({ 
+      ...formSeleccionarInventario, 
+      todosVerifFisica: checked,
+      todosVerifDigital: checked ? false : formSeleccionarInventario.todosVerifDigital
+    })
+    
+    // Update all items
+    setInventarioItems(items => 
+      items.map(item => ({
+        ...item,
+        verifFisica: checked,
+        verifDigital: checked ? false : item.verifDigital
+      }))
+    )
+  }
+
+  const handleTodosVerifDigital = (checked: boolean) => {
+    setFormSeleccionarInventario({ 
+      ...formSeleccionarInventario, 
+      todosVerifDigital: checked,
+      todosVerifFisica: checked ? false : formSeleccionarInventario.todosVerifFisica
+    })
+    
+    // Update all items
+    setInventarioItems(items => 
+      items.map(item => ({
+        ...item,
+        verifDigital: checked,
+        verifFisica: checked ? false : item.verifFisica
+      }))
+    )
+  }
+
+  const handleItemVerifFisica = (itemId: number, checked: boolean) => {
+    setInventarioItems(items => 
+      items.map(item => 
+        item.id === itemId 
+          ? { ...item, verifFisica: checked, verifDigital: checked ? false : item.verifDigital }
+          : item
+      )
+    )
+  }
+
+  const handleItemVerifDigital = (itemId: number, checked: boolean) => {
+    setInventarioItems(items => 
+      items.map(item => 
+        item.id === itemId 
+          ? { ...item, verifDigital: checked, verifFisica: checked ? false : item.verifFisica }
+          : item
+      )
+    )
+  }
+
+  const registrarInventario = () => {
+    setShowRegistrarInventarioModal(true)
+  }
+
+  const handleRegistrarInventario = () => {
+    if (!formRegistrarInventario.numero || !formRegistrarInventario.nombre) {
+      alert("Por favor complete all the fields")
+      return
+    }
+    alert(`Inventario registrado: ${formRegistrarInventario.nombre}`)
+    setShowRegistrarInventarioModal(false)
+    setFormRegistrarInventario({
+      numero: "",
+      fecha: new Date().toLocaleDateString("es-ES"),
+      nombre: "",
+      tipoInventario: "PRESENTACION ANUAL",
+    })
+  }
+
+  const handleInputRegistrarInventario = (field: string, value: string) => {
+    if (field === "numero") {
+      // Solo permitir números
+      const numeroValue = value.replace(/[^0-9]/g, "")
+      setFormRegistrarInventario({ ...formRegistrarInventario, [field]: numeroValue })
+    } else if (field === "nombre") {
+      // Solo permitir números y letras
+      const nombreValue = value.replace(/[^a-zA-Z0-9\s]/g, "")
+      setFormRegistrarInventario({ ...formRegistrarInventario, [field]: nombreValue })
+    } else {
+      setFormRegistrarInventario({ ...formRegistrarInventario, [field]: value })
+    }
+  }
+
+  const cambiarPagina = (nuevaPagina: number) => {
+    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+      setPaginaActual(nuevaPagina)
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-blue-600 text-white p-2 text-sm">
+        Módulo de Patrimonio - Ejecutora: MINISTERIO PÚBLICO - GERENCIA ADMINISTRATIVA DE LA LIBERTAD
       </div>
 
-      {/* Sección de filtros */}
       <div className="space-y-4">
-        <h3 className="font-bold">[ Listado de Items por Inventario ]</h3>
+        <h2 className="text-xl font-bold">Listado del Inventario Físico</h2>
 
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Label>Filtrar por:</Label>
+        {/* Controles superiores */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div>
+            <Label>Año Inventario</Label>
             <select
-              className="border rounded px-3 py-2"
-              value={filtrarPor}
-              onChange={(e) => setFiltrarPor(e.target.value)}
+              className="w-full border rounded px-3 py-2"
+              value={añoInventario}
+              onChange={(e) => setAñoInventario(e.target.value)}
             >
-              {opcionesFiltro.map((opcion) => (
-                <option key={opcion} value={opcion}>
-                  {opcion}
+              {añosDisponibles.map((año) => (
+                <option key={año} value={año}>
+                  {año}
                 </option>
               ))}
             </select>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Label>Valor de búsqueda:</Label>
-            <Input
-              placeholder="Ingrese valor a buscar (ej: 01)"
-              value={valorBusqueda}
-              onChange={(e) => setValorBusqueda(e.target.value)}
-              className="w-64"
-            />
+          <div>
+            <Label>Número Inventario</Label>
+            <select
+              className="w-full border rounded px-3 py-2"
+              value={numeroInventario}
+              onChange={(e) => setNumeroInventario(e.target.value)}
+            >
+              <option value="INVENTARIO DE BIENES MUEBLES PATRIMONIO">INVENTARIO DE BIENES MUEBLES PATRIMONIO</option>
+            </select>
+          </div>
+
+          <div>
+            <Label>Fecha Registro</Label>
+            <Input value={fechaRegistro} readOnly className="bg-gray-100" />
+          </div>
+
+          <div>
+            <Label>Tipo Inventario</Label>
+            <select
+              className="w-full border rounded px-3 py-2"
+              value={tipoInventario}
+              onChange={(e) => setTipoInventario(e.target.value)}
+            >
+              <option value="OTROS">OTROS</option>
+              <option value="PRESENTACION ANUAL">PRESENTACION ANUAL</option>
+            </select>
+          </div>
+
+          <div>
+            <Label>Tipo Registro</Label>
+            <select
+              className="w-full border rounded px-3 py-2"
+              value={tipoRegistro}
+              onChange={(e) => setTipoRegistro(e.target.value)}
+            >
+              {tiposRegistro.map((tipo) => (
+                <option key={tipo} value={tipo}>
+                  {tipo}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex gap-2">
+            <Button onClick={seleccionarInventario} variant="outline">
+              Seleccionar Inventario
+            </Button>
+            <Button onClick={registrarInventario}>Registrar Inventario</Button>
           </div>
         </div>
-      </div>
 
-      {/* Tabla de activos */}
-      <div className="border rounded">
-        <table className="w-full">
-          <thead className="bg-blue-600 text-white">
-            <tr>
-              <th className="p-2 text-left">Item</th>
-              <th className="p-2 text-left">Código Patrimonial</th>
-              <th className="p-2 text-left">Código Barra/Inv Anterior</th>
-              <th className="p-2 text-left">Descripción</th>
-              <th className="p-2 text-left">Tipo Verif</th>
-              <th className="p-2 text-left">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {activosPaginados.map((activo, index) => (
-              <tr key={activo.item} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                <td className="p-2">{activo.item}</td>
-                <td className="p-2 font-mono text-sm">{activo.codigoPatrimonial}</td>
-                <td className="p-2">{activo.codigoBarraInvAnterior}</td>
-                <td className="p-2">{activo.descripcion}</td>
-                <td className="p-2 text-center">{activo.tipoVerif}</td>
-                <td className="p-2">
-                  <Button size="sm" variant="outline" onClick={() => abrirModalActivoFijo(activo)}>
-                    Ver Activo Fijo
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        {/* Sección de filtros */}
+        <div className="space-y-4">
+          <h3 className="font-bold">[ Listado de Items por Inventario ]</h3>
 
-      {/* Paginación funcional */}
-      <div className="flex justify-center items-center gap-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => cambiarPagina(paginaActual - 1)}
-          disabled={paginaActual === 1}
-        >
-          ◀
-        </Button>
-        <span className="text-sm">
-          Página {paginaActual} de {totalPaginas} | Mostrando {activosPaginados.length} de {activosFiltrados.length}
-          registros
-        </span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => cambiarPagina(paginaActual + 1)}
-          disabled={paginaActual === totalPaginas}
-        >
-          ▶
-        </Button>
-      </div>
-    </div>
-
-    {/* Modal de Registrar Inventario */}
-    {showRegistrarInventarioModal && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg w-full max-w-md">
-          <div className="bg-blue-600 text-white p-3 rounded-t-lg">
-            <h3 className="font-bold">Generar Inventario Físico</h3>
-          </div>
-          <div className="p-4 space-y-4">
-            <div>
-              <Label>Número</Label>
-              <Input
-                placeholder="Ingrese número"
-                value={formRegistrarInventario.numero}
-                onChange={(e) => handleInputRegistrarInventario("numero", e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>Fecha</Label>
-              <Input value={formRegistrarInventario.fecha} readOnly className="bg-gray-100" />
-            </div>
-            <div>
-              <Label>Nombre</Label>
-              <Input
-                placeholder="Ingrese nombre del inventario"
-                value={formRegistrarInventario.nombre}
-                onChange={(e) => handleInputRegistrarInventario("nombre", e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>Tipo Inventario</Label>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Label>Filtrar por:</Label>
               <select
-                className="w-full border rounded px-3 py-2"
-                value={formRegistrarInventario.tipoInventario}
-                onChange={(e) => handleInputRegistrarInventario("tipoInventario", e.target.value)}
+                className="border rounded px-3 py-2"
+                value={filtrarPor}
+                onChange={(e) => setFiltrarPor(e.target.value)}
               >
-                <option value="PRESENTACION ANUAL">PRESENTACION ANUAL</option>
-                <option value="OTROS">OTROS</option>
+                {opcionesFiltro.map((opcion) => (
+                  <option key={opcion} value={opcion}>
+                    {opcion}
+                  </option>
+                ))}
               </select>
             </div>
-            <div className="flex justify-end gap-2 pt-4">
-              <Button variant="outline" onClick={() => setShowRegistrarInventarioModal(false)}>
-                Salir
-              </Button>
-              <Button onClick={handleRegistrarInventario}>Guardar</Button>
+
+            <div className="flex items-center gap-2">
+              <Label>Valor de búsqueda:</Label>
+              <Input
+                placeholder="Ingrese valor a buscar (ej: 01)"
+                value={valorBusqueda}
+                onChange={(e) => setValorBusqueda(e.target.value)}
+                className="w-64"
+              />
             </div>
           </div>
         </div>
-      </div>
-    )}
 
-    {/* Modal de Datos del Activo Fijo - Nuevo diseño */}
-    {showActivoFijoModal && activoSeleccionado && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-y-auto">
-          <div className="bg-blue-600 text-white p-3 flex justify-between items-center rounded-t-lg">
-            <h2 className="font-bold text-lg">Datos del Activo Fijo</h2>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowActivoFijoModal(false)}
-              className="text-white hover:bg-blue-700 text-xl font-bold w-8 h-8 p-0"
-            >
-              ✕
-            </Button>
-          </div>
-
-          <div className="p-6">
-            <table className="w-full border-collapse border border-gray-300 text-sm">
-              <tbody>
-                {/* Primera fila */}
-                <tr>
-                  <td className="border border-gray-300 p-2 bg-gray-200 w-32 font-medium">Item</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="112228220001"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 w-32 font-medium">Correlativo</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="00003247"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 w-32 font-medium">Tipo Patrimonio</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="Bienes Muebles"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
+        {/* Tabla de activos */}
+        <div className="border rounded">
+          <table className="w-full">
+            <thead className="bg-blue-600 text-white">
+              <tr>
+                <th className="p-2 text-left">Item</th>
+                <th className="p-2 text-left">Código Patrimonial</th>
+                <th className="p-2 text-left">Código Barra/Inv Anterior</th>
+                <th className="p-2 text-left">Descripción</th>
+                <th className="p-2 text-left">Tipo Verif</th>
+                <th className="p-2 text-left">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {activosPaginados.map((activo, index) => (
+                <tr key={activo.item} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                  <td className="p-2">{activo.item}</td>
+                  <td className="p-2 font-mono text-sm">{activo.codigoPatrimonial}</td>
+                  <td className="p-2">{activo.codigoBarraInvAnterior}</td>
+                  <td className="p-2">{activo.descripcion}</td>
+                  <td className="p-2 text-center">{activo.tipoVerif}</td>
+                  <td className="p-2">
+                    <Button size="sm" variant="outline" onClick={() => abrirModalActivoFijo(activo)}>
+                      Ver Activo Fijo
+                    </Button>
                   </td>
                 </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-                {/* Segunda fila */}
-                <tr>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Cód. Patrimonial</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="112228220002"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Estado</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="Activo Fijo"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium" colSpan={2}>
-                    <input
-                      type="text"
-                      value="Muebles y Enseres"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                </tr>
-
-                {/* Tercera fila */}
-                <tr>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Código Barra/Inv. Anterior</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="P148265"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Fecha Ingreso</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="01/01/2019"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Nro Serie</td>
-                  <td className="border border-gray-300 p-2">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value="59E0122QJ16"
-                        readOnly
-                        className="flex-1 h-6 text-xs px-1 bg-gray-100 border-0"
-                      />
-                      <span className="text-xs">Estado Conserv</span>
-                      <select
-                        disabled
-                        className="h-6 text-xs px-1 bg-gray-100 border border-gray-300"
-                        defaultValue="Bueno"
-                      >
-                        <option value="BUENO">BUENO</option>
-                        <option value="REGULAR">REGULAR</option>
-                        <option value="MALO">MALO</option>
-                        <option value="MUY MALO">MUY MALO</option>
-                        <option value="NUEVO">NUEVO</option>
-                        <option value="CHATARRA">CHATARRA</option>
-                        <option value="RAEE">RAEE</option>
-                      </select>
-                    </div>
-                  </td>
-                </tr>
-
-                {/* Cuarta fila */}
-                <tr>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Descripción</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Marca</td>
-                  <td className="border border-gray-300 p-2">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value="LG"
-                        readOnly
-                        className="flex-1 h-6 text-xs px-1 bg-gray-100 border-0"
-                      />
-                      <span className="text-xs">Estado Uso</span>
-                      <select
-                        disabled
-                        className="h-6 text-xs px-1 bg-gray-100 border border-gray-300"
-                        defaultValue="Si"
-                      >
-                        <option value="Si">Si</option>
-                        <option value="No">No</option>
-                      </select>
-                    </div>
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Modelo</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="S/M"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                </tr>
-
-                {/* Quinta fila */}
-                <tr>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Sede</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="ARCHIVO CENTRAL"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Medidas</td>
-                  <td className="border border-gray-300 p-2">
-                    <input type="text" value="" readOnly className="w-full h-6 text-xs px-1 bg-gray-100 border-0" />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium" colSpan={2}></td>
-                </tr>
-
-                {/* Sexta fila */}
-                <tr>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Centro Costo</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="01.06-ARCHIVO"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Características</td>
-                  <td className="border border-gray-300 p-2" colSpan={3}>
-                    <input
-                      type="text"
-                      value="DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL, M..."
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                </tr>
-
-                {/* Séptima fila */}
-                <tr>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Ubic. Física</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="2004-ARCHIVO - PISO 2"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Observaciones</td>
-                  <td className="border border-gray-300 p-2" colSpan={3}>
-                    <input
-                      type="text"
-                      value="LIB-009458-24"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                </tr>
-
-                {/* Octava fila */}
-                <tr>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Responsable</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="GUERRERO ESCOBEDO JHONY GERHARD"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium" colSpan={4}></td>
-                </tr>
-
-                {/* Novena fila */}
-                <tr>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Usuario Final</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="GUERRERO ESCOBEDO JHONY GERHARD"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium" colSpan={4}></td>
-                </tr>
-
-                {/* Décima fila */}
-                <tr>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Tipo Ingreso</td>
-                  <td className="border border-gray-300 p-2">
-                    <input
-                      type="text"
-                      value="INVENTARIO INICIAL"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Cta Contable</td>
-                  <td className="border border-gray-300 p-2" colSpan={3}>
-                    <input
-                      type="text"
-                      value="150302090l-AIRE ACONDICIONADO Y REFRIGERACIÓN"
-                      readOnly
-                      className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
-                    />
-                  </td>
-                </tr>
-
-                {/* Última fila */}
-                <tr>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Verif. Física/Digital</td>
-                  <td className="border border-gray-300 p-2">
-                    <div className="flex items-center gap-1">
-                      <input type="checkbox" checked disabled className="h-4 w-4" />
-                    </div>
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Etiquetado</td>
-                  <td className="border border-gray-300 p-2">
-                    <div className="flex items-center gap-1">
-                      <input type="checkbox" disabled className="h-4 w-4" />
-                    </div>
-                  </td>
-                  <td className="border border-gray-300 p-2 bg-gray-200 font-medium" colSpan={2}></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        {/* Paginación funcional */}
+        <div className="flex justify-center items-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => cambiarPagina(paginaActual - 1)}
+            disabled={paginaActual === 1}
+          >
+            ◀
+          </Button>
+          <span className="text-sm">
+            Página {paginaActual} de {totalPaginas} | Mostrando {activosPaginados.length} de {activosFiltrados.length}
+            registros
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => cambiarPagina(paginaActual + 1)}
+            disabled={paginaActual === totalPaginas}
+          >
+            ▶
+          </Button>
         </div>
       </div>
-    )}
 
-    {/* Modal de Seleccionar Inventario */}
-    {showSeleccionarInventarioModal && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg w-full max-w-7xl max-h-[90vh] overflow-y-auto">
-          <div className="bg-blue-600 text-white p-3 rounded-t-lg">
-            <h3 className="font-bold text-lg">Registro del Inventario Físico</h3>
-          </div>
-          
-          <div className="p-6 space-y-4">
-            {/* Form controls */}
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label>Año Inventario</Label>
-                <select
-                  className="w-full border rounded px-3 py-2"
-                  value={formSeleccionarInventario.año}
-                  onChange={(e) => handleInputSeleccionarInventario("año", e.target.value)}
-                >
-                  {añosSeleccionarInventario.map((año) => (
-                    <option key={año} value={año}>
-                      {año}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              <div>
-                <Label>Número Inventario</Label>
-                <select
-                  className="w-full border rounded px-3 py-2"
-                  value={formSeleccionarInventario.numeroInventario}
-                  onChange={(e) => handleInputSeleccionarInventario("numeroInventario", e.target.value)}
-                >
-                  <option value="INVENTARIO DE BIENES MUEBLES PATRIMONIO">INVENTARIO DE BIENES MUEBLES PATRIMONIO</option>
-                </select>
-              </div>
-              
-              <div>
-                <Label>Fecha Registro</Label>
-                <Input value={formSeleccionarInventario.fechaRegistro} readOnly className="bg-gray-100" />
-              </div>
+      {/* Modal de Registrar Inventario */}
+      {showRegistrarInventarioModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-md">
+            <div className="bg-blue-600 text-white p-3 rounded-t-lg">
+              <h3 className="font-bold">Generar Inventario Físico</h3>
             </div>
-            
-            <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 space-y-4">
+              <div>
+                <Label>Número</Label>
+                <Input
+                  placeholder="Ingrese número"
+                  value={formRegistrarInventario.numero}
+                  onChange={(e) => handleInputRegistrarInventario("numero", e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>Fecha</Label>
+                <Input value={formRegistrarInventario.fecha} readOnly className="bg-gray-100" />
+              </div>
+              <div>
+                <Label>Nombre</Label>
+                <Input
+                  placeholder="Ingrese nombre del inventario"
+                  value={formRegistrarInventario.nombre}
+                  onChange={(e) => handleInputRegistrarInventario("nombre", e.target.value)}
+                />
+              </div>
               <div>
                 <Label>Tipo Inventario</Label>
                 <select
                   className="w-full border rounded px-3 py-2"
-                  value={formSeleccionarInventario.tipoInventario}
-                  onChange={(e) => handleInputSeleccionarInventario("tipoInventario", e.target.value)}
+                  value={formRegistrarInventario.tipoInventario}
+                  onChange={(e) => handleInputRegistrarInventario("tipoInventario", e.target.value)}
                 >
-                  <option value="OTROS">OTROS</option>
                   <option value="PRESENTACION ANUAL">PRESENTACION ANUAL</option>
+                  <option value="OTROS">OTROS</option>
                 </select>
               </div>
-              
-              <div>
-                <Label>Tipo Registro</Label>
-                <select
-                  className="w-full border rounded px-3 py-2"
-                  value={formSeleccionarInventario.tipoRegistro}
-                  onChange={(e) => handleInputSeleccionarInventario("tipoRegistro", e.target.value)}
-                >
-                  {tiposRegistro.map((tipo) => (
-                    <option key={tipo} value={tipo}>
-                      {tipo}
-                    </option>
-                  ))}
-                </select>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button variant="outline" onClick={() => setShowRegistrarInventarioModal(false)}>
+                  Salir
+                </Button>
+                <Button onClick={handleRegistrarInventario}>Guardar</Button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Datos del Activo Fijo - Nuevo diseño */}
+      {showActivoFijoModal && activoSeleccionado && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+            <div className="bg-blue-600 text-white p-3 flex justify-between items-center rounded-t-lg">
+              <h2 className="font-bold text-lg">Datos del Activo Fijo</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowActivoFijoModal(false)}
+                className="text-white hover:bg-blue-700 text-xl font-bold w-8 h-8 p-0"
+              >
+                ✕
+              </Button>
+            </div>
+
+            <div className="p-6">
+              <table className="w-full border-collapse border border-gray-300 text-sm">
+                <tbody>
+                  {/* Primera fila */}
+                  <tr>
+                    <td className="border border-gray-300 p-2 bg-gray-200 w-32 font-medium">Item</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="112228220001"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 w-32 font-medium">Correlativo</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="00003247"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 w-32 font-medium">Tipo Patrimonio</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="Bienes Muebles"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                  </tr>
+
+                  {/* Segunda fila */}
+                  <tr>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Cód. Patrimonial</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="112228220002"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Estado</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="Activo Fijo"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium" colSpan={2}>
+                      <input
+                        type="text"
+                        value="Muebles y Enseres"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                  </tr>
+
+                  {/* Tercera fila */}
+                  <tr>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Código Barra/Inv. Anterior</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="P148265"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Fecha Ingreso</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="01/01/2019"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Nro Serie</td>
+                    <td className="border border-gray-300 p-2">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value="59E0122QJ16"
+                          readOnly
+                          className="flex-1 h-6 text-xs px-1 bg-gray-100 border-0"
+                        />
+                        <span className="text-xs">Estado Conserv</span>
+                        <select
+                          disabled
+                          className="h-6 text-xs px-1 bg-gray-100 border border-gray-300"
+                          defaultValue="Bueno"
+                        >
+                          <option value="BUENO">BUENO</option>
+                          <option value="REGULAR">REGULAR</option>
+                          <option value="MALO">MALO</option>
+                          <option value="MUY MALO">MUY MALO</option>
+                          <option value="NUEVO">NUEVO</option>
+                          <option value="CHATARRA">CHATARRA</option>
+                          <option value="RAEE">RAEE</option>
+                        </select>
+                      </div>
+                    </td>
+                  </tr>
+
+                  {/* Cuarta fila */}
+                  <tr>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Descripción</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Marca</td>
+                    <td className="border border-gray-300 p-2">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value="LG"
+                          readOnly
+                          className="flex-1 h-6 text-xs px-1 bg-gray-100 border-0"
+                        />
+                        <span className="text-xs">Estado Uso</span>
+                        <select
+                          disabled
+                          className="h-6 text-xs px-1 bg-gray-100 border border-gray-300"
+                          defaultValue="Si"
+                        >
+                          <option value="Si">Si</option>
+                          <option value="No">No</option>
+                        </select>
+                      </div>
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Modelo</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="S/M"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                  </tr>
+
+                  {/* Quinta fila */}
+                  <tr>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Sede</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="ARCHIVO CENTRAL"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Medidas</td>
+                    <td className="border border-gray-300 p-2">
+                      <input type="text" value="" readOnly className="w-full h-6 text-xs px-1 bg-gray-100 border-0" />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium" colSpan={2}></td>
+                  </tr>
+
+                  {/* Sexta fila */}
+                  <tr>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Centro Costo</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="01.06-ARCHIVO"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Características</td>
+                    <td className="border border-gray-300 p-2" colSpan={3}>
+                      <input
+                        type="text"
+                        value="DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL, M..."
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                  </tr>
+
+                  {/* Séptima fila */}
+                  <tr>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Ubic. Física</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="2004-ARCHIVO - PISO 2"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Observaciones</td>
+                    <td className="border border-gray-300 p-2" colSpan={3}>
+                      <input
+                        type="text"
+                        value="LIB-009458-24"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                  </tr>
+
+                  {/* Octava fila */}
+                  <tr>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Responsable</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="GUERRERO ESCOBEDO JHONY GERHARD"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium" colSpan={4}></td>
+                  </tr>
+
+                  {/* Novena fila */}
+                  <tr>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Usuario Final</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="GUERRERO ESCOBEDO JHONY GERHARD"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium" colSpan={4}></td>
+                  </tr>
+
+                  {/* Décima fila */}
+                  <tr>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Tipo Ingreso</td>
+                    <td className="border border-gray-300 p-2">
+                      <input
+                        type="text"
+                        value="INVENTARIO INICIAL"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Cta Contable</td>
+                    <td className="border border-gray-300 p-2" colSpan={3}>
+                      <input
+                        type="text"
+                        value="150302090l-AIRE ACONDICIONADO Y REFRIGERACIÓN"
+                        readOnly
+                        className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
+                      />
+                    </td>
+                  </tr>
+
+                  {/* Última fila */}
+                  <tr>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Verif. Física/Digital</td>
+                    <td className="border border-gray-300 p-2">
+                      <div className="flex items-center gap-1">
+                        <input type="checkbox" checked disabled className="h-4 w-4" />
+                      </div>
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium">Etiquetado</td>
+                    <td className="border border-gray-300 p-2">
+                      <div className="flex items-center gap-1">
+                        <input type="checkbox" disabled className="h-4 w-4" />
+                      </div>
+                    </td>
+                    <td className="border border-gray-300 p-2 bg-gray-200 font-medium" colSpan={2}></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Seleccionar Inventario */}
+      {showSeleccionarInventarioModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-7xl max-h-[90vh] overflow-y-auto">
+            <div className="bg-blue-600 text-white p-3 rounded-t-lg">
+              <h3 className="font-bold text-lg">Registro del Inventario Físico</h3>
+            </div>
             
-            {/* Search section */}
-            <div className="border-t pt-4">
-              <h4 className="font-medium mb-3">[ Listado de Items ]</h4>
-              
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex items-center gap-2">
-                  <Label>Búsqueda</Label>
+            <div className="p-6 space-y-4">
+              {/* Form controls */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label>Año Inventario</Label>
                   <select
-                    className="border rounded px-3 py-2"
-                    value={formSeleccionarInventario.busqueda}
-                    onChange={(e) => handleInputSeleccionarInventario("busqueda", e.target.value)}
+                    className="w-full border rounded px-3 py-2"
+                    value={formSeleccionarInventario.año}
+                    onChange={(e) => handleInputSeleccionarInventario("año", e.target.value)}
                   >
-                    {opcionesFiltro.map((opcion) => (
-                      <option key={opcion} value={opcion}>
-                        {opcion}
+                    {añosSeleccionarInventario.map((año) => (
+                      <option key={año} value={año}>
+                        {año}
                       </option>
                     ))}
                   </select>
                 </div>
                 
-                <Input
-                  placeholder="Ingrese término de búsqueda"
-                  value={formSeleccionarInventario.terminoBusqueda}
-                  onChange={(e) => handleInputSeleccionarInventario("terminoBusqueda", e.target.value)}
-                  className="w-64"
-                />
+                <div>
+                  <Label>Número Inventario</Label>
+                  <select
+                    className="w-full border rounded px-3 py-2"
+                    value={formSeleccionarInventario.numeroInventario}
+                    onChange={(e) => handleInputSeleccionarInventario("numeroInventario", e.target.value)}
+                  >
+                    <option value="INVENTARIO DE BIENES MUEBLES PATRIMONIO">INVENTARIO DE BIENES MUEBLES PATRIMONIO</option>
+                  </select>
+                </div>
                 
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={formSeleccionarInventario.todosVerifFisica}
-                      onChange={(e) => handleTodosVerifFisica(e.target.checked)}
-                    />
-                    <span className="text-sm">Todos Verific. Física</span>
-                  </label>
-                  
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={formSeleccionarInventario.todosVerifDigital}
-                      onChange={(e) => handleTodosVerifDigital(e.target.checked)}
-                    />
-                    <span className="text-sm">Todos Verific. Digital</span>
-                  </label>
+                <div>
+                  <Label>Fecha Registro</Label>
+                  <Input value={formSeleccionarInventario.fechaRegistro} readOnly className="bg-gray-100" />
                 </div>
               </div>
-            </div>
-            
-            {/* Data table */}
-            <div className="border rounded max-h-96 overflow-y-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-blue-600 text-white sticky top-0">
-                  <tr>
-                    <th className="p-2 text-left">Sel</th>
-                    <th className="p-2 text-left">Código Patrimonial</th>
-                    <th className="p-2 text-left">Código Barra</th>
-                    <th className="p-2 text-left">Descripción</th>
-                    <th className="p-2 text-left">Verific. Física</th>
-                    <th className="p-2 text-left">Verific. Digital</th>
-                    <th className="p-2 text-left">Editar</th>
-                    <th className="p-2 text-left">Sede</th>
-                    <th className="p-2 text-left">Centro de Costo</th>
-                    <th className="p-2 text-left">Ubicación</th>
-                    <th className="p-2 text-left">Responsable</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {inventarioItems.map((item, index) => (
-                    <tr key={item.id} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                      <td className="p-2">
-                        <input
-                          type="checkbox"
-                          checked={item.selected}
-                          onChange={(e) => {
-                            setInventarioItems(items => 
-                              items.map(i => 
-                                i.id === item.id ? { ...i, selected: e.target.checked } : i
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Tipo Inventario</Label>
+                  <select
+                    className="w-full border rounded px-3 py-2"
+                    value={formSeleccionarInventario.tipoInventario}
+                    onChange={(e) => handleInputSeleccionarInventario("tipoInventario", e.target.value)}
+                  >
+                    <option value="OTROS">OTROS</option>
+                    <option value="PRESENTACION ANUAL">PRESENTACION ANUAL</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <Label>Tipo Registro</Label>
+                  <select
+                    className="w-full border rounded px-3 py-2"
+                    value={formSeleccionarInventario.tipoRegistro}
+                    onChange={(e) => handleInputSeleccionarInventario("tipoRegistro", e.target.value)}
+                  >
+                    {tiposRegistro.map((tipo) => (
+                      <option key={tipo} value={tipo}>
+                        {tipo}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              
+              {/* Search section */}
+              <div className="border-t pt-4">
+                <h4 className="font-medium mb-3">[ Listado de Items ]</h4>
+                
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Label>Búsqueda</Label>
+                    <select
+                      className="border rounded px-3 py-2"
+                      value={formSeleccionarInventario.busqueda}
+                      onChange={(e) => handleInputSeleccionarInventario("busqueda", e.target.value)}
+                    >
+                      {opcionesFiltro.map((opcion) => (
+                        <option key={opcion} value={opcion}>
+                          {opcion}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <Input
+                    placeholder="Ingrese término de búsqueda"
+                    value={formSeleccionarInventario.terminoBusqueda}
+                    onChange={(e) => handleInputSeleccionarInventario("terminoBusqueda", e.target.value)}
+                    className="w-64"
+                  />
+                  
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={formSeleccionarInventario.todosVerifFisica}
+                        onChange={(e) => handleTodosVerifFisica(e.target.checked)}
+                      />
+                      <span className="text-sm">Todos Verific. Física</span>
+                    </label>
+                    
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={formSeleccionarInventario.todosVerifDigital}
+                        onChange={(e) => handleTodosVerifDigital(e.target.checked)}
+                      />
+                      <span className="text-sm">Todos Verific. Digital</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Data table */}
+              <div className="border rounded max-h-96 overflow-y-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-blue-600 text-white sticky top-0">
+                    <tr>
+                      <th className="p-2 text-left">Sel</th>
+                      <th className="p-2 text-left">Código Patrimonial</th>
+                      <th className="p-2 text-left">Código Barra</th>
+                      <th className="p-2 text-left">Descripción</th>
+                      <th className="p-2 text-left">Verific. Física</th>
+                      <th className="p-2 text-left">Verific. Digital</th>
+                      <th className="p-2 text-left">Editar</th>
+                      <th className="p-2 text-left">Sede</th>
+                      <th className="p-2 text-left">Centro de Costo</th>
+                      <th className="p-2 text-left">Ubicación</th>
+                      <th className="p-2 text-left">Responsable</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {inventarioItems.map((item, index) => (
+                      <tr key={item.id} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                        <td className="p-2">
+                          <input
+                            type="checkbox"
+                            checked={item.selected}
+                            onChange={(e) => {
+                              setInventarioItems(items => 
+                                items.map(i => 
+                                  i.id === item.id ? { ...i, selected: e.target.checked } : i
+                                )
                               )
-                            )
-                          }}
-                        />
-                      </td>
-                      <td className="p-2 font-mono text-xs">{item.codigoPatrimonial}</td>
-                      <td className="p-2 text-xs">{item.codigoBarra}</td>
-                      <td className="p-2 text-xs">{item.descripcion}</td>
-                      <td className="p-2 text-center">
-                        <input
-                          type="checkbox"
-                          checked={item.verifFisica}
-                          onChange={(e) => handleItemVerifFisica(item.id, e.target.checked)}
-                        />
-                      </td>
-                      <td className="p-2 text-center">
-                        <input
-                          type="checkbox"
-                          checked={item.verifDigital}
-                          onChange={(e) => handleItemVerifDigital(item.id, e.target.checked)}
-                        />
-                      </td>
-                      <td className="p-2">
-                        <Button size="sm" variant="outline" className="text-xs px-2 py-1">
-                          Editar
-                        </Button>
-                      </td>
-                      <td className="p-2 text-xs">{item.sede}</td>
-                      <td className="p-2 text-xs">{item.centroCosto}</td>
-                      <td className="p-2 text-xs">{item.ubicacion}</td>
-                      <td className="p-2 text-xs">{item.responsable}</td>
+                            }}
+                          />
+                        </td>
+                        <td className="p-2 font-mono text-xs">{item.codigoPatrimonial}</td>
+                        <td className="p-2 text-xs">{item.codigoBarra}</td>
+                        <td className="p-2 text-xs">{item.descripcion}</td>
+                        <td className="p-2 text-center">
+                          <input
+                            type="checkbox"
+                            checked={item.verifFisica}
+                            onChange={(e) => handleItemVerifFisica(item.id, e.target.checked)}
+                          />
+                        </td>
+                        <td className="p-2 text-center">
+                          <input
+                            type="checkbox"
+                            checked={item.verifDigital}
+                            onChange={(e) => handleItemVerifDigital(item.id, e.target.checked)}
+                          />
+                        </td>
+                        <td className="p-2">
+                          <Button size="sm" variant="outline" className="text-xs px-2 py-1">
+                            Editar
+                          </Button>
+                        </td>
+                        <td className="p-2 text-xs">{item.sede}</td>
+                        <td className="p-2 text-xs">{item.centroCosto}</td>
+                        <td className="p-2 text-xs">{item.ubicacion}</td>
+                        <td className="p-2 text-xs">{item.responsable}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+
+              <div className="flex justify-end gap-4 pt-4 border-t">
+                <Button variant="outline" onClick={() => setShowSeleccionarInventarioModal(false)}>
+                  Salir
+                </Button>
+                <Button onClick={() => setShowSeleccionarInventarioModal(false)}>
+                  Guardar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
