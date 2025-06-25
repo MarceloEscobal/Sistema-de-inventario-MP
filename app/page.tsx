@@ -3091,6 +3091,23 @@ function InventarioModule() {
     tipoInventario: "PRESENTACION ANUAL",
   })
 
+  // Estado para el modal de editar activo fijo
+  const [showEditarActivoModal, setShowEditarActivoModal] = useState(false)
+  const [activoEditando, setActivoEditando] = useState<any>(null)
+  const [formEditarActivo, setFormEditarActivo] = useState({
+    descripcion: "",
+    sede: "",
+    centroCosto: "",
+    ubicacionFisica: "",
+    usuarioFinal: "",
+    nroSerie: "",
+    marca: "",
+    estadoConserv: "",
+    estadoUso: "",
+    modelo: "",
+    caracteristicas: "",
+  })
+
   // Generar años desde 2015 hasta el año actual
   const añosDisponibles = []
   const añoActual = new Date().getFullYear()
@@ -3112,21 +3129,34 @@ function InventarioModule() {
   const opcionesFiltro = ["Descripción", "Sede", "Código", "Centro de Costo", "Ubicación", "Tipo de Verificación"]
 
   // Datos de ejemplo de activos (simulando 50 registros para 5 páginas)
-  const todosLosActivos = []
-  for (let i = 1; i <= 50; i++) {
-    todosLosActivos.push({
-      item: i,
-      codigoPatrimonial: `11223${String(i).padStart(7, "0")}`,
-      codigoBarraInvAnterior: `P${String(14253 + i).padStart(5, "0")}`,
-      descripcion:
-        i === 1
-          ? "DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL"
-          : i <= 10
-            ? `EQUIPO DE AIRE ACONDICIONADO DE PRECISION 24000 BTU - UNIDAD ${i - 1}`
-            : `EQUIPO DE OFICINA TIPO ${i}`,
-      tipoVerif: "F",
-    })
-  }
+  const [todosLosActivos, setTodosLosActivos] = useState(() => {
+    const activos = []
+    for (let i = 1; i <= 50; i++) {
+      activos.push({
+        item: i,
+        codigoPatrimonial: `11223${String(i).padStart(7, "0")}`,
+        codigoBarraInvAnterior: `P${String(14253 + i).padStart(5, "0")}`,
+        descripcion:
+          i === 1
+            ? "DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL"
+            : i <= 10
+              ? `EQUIPO DE AIRE ACONDICIONADO DE PRECISION 24000 BTU - UNIDAD ${i - 1}`
+              : `EQUIPO DE OFICINA TIPO ${i}`,
+        tipoVerif: "F",
+        sede: i <= 10 ? "ARCHIVO CENTRAL" : i <= 20 ? "SEDE PRINCIPAL" : "ASCOPE",
+        centroCosto: i <= 10 ? "01.06-ARCHIVO" : i <= 20 ? "01.06-PRINCIPAL" : "02.06-ASCOPE",
+        ubicacionFisica: i <= 10 ? "2004-ARCHIVO - PISO 2" : i <= 20 ? "Oficina 201" : "OFICINA 100",
+        usuarioFinal: i <= 10 ? "GUERRERO ESCOBEDO JHONY GERHARD" : i <= 20 ? "Juan Pérez" : "MARIA RODRIGUEZ SILVA",
+        nroSerie: `DL${String(123456789 + i).padStart(9, "0")}`,
+        marca: i <= 10 ? "LG" : i <= 20 ? "Dell" : "HP",
+        estadoConserv: i % 3 === 0 ? "Regular" : "Bueno",
+        estadoUso: "Si",
+        modelo: i <= 10 ? "S/M" : i <= 20 ? "Inspiron 15 3000" : "LaserJet Pro",
+        caracteristicas: i <= 10 ? "DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL, M..." : "Equipo para trabajo de oficina",
+      })
+    }
+    return activos
+  })
 
   // Filtrar activos según el criterio seleccionado
   const activosFiltrados = todosLosActivos.filter((activo) => {
@@ -3137,6 +3167,12 @@ function InventarioModule() {
         return activo.descripcion.toLowerCase().includes(valorBusqueda.toLowerCase())
       case "Código":
         return activo.codigoPatrimonial.includes(valorBusqueda)
+      case "Sede":
+        return activo.sede.toLowerCase().includes(valorBusqueda.toLowerCase())
+      case "Centro de Costo":
+        return activo.centroCosto.toLowerCase().includes(valorBusqueda.toLowerCase())
+      case "Ubicación":
+        return activo.ubicacionFisica.toLowerCase().includes(valorBusqueda.toLowerCase())
       default:
         return activo.descripcion.toLowerCase().includes(valorBusqueda.toLowerCase())
     }
@@ -3151,6 +3187,58 @@ function InventarioModule() {
   const abrirModalActivoFijo = (activo: any) => {
     setActivoSeleccionado(activo)
     setShowActivoFijoModal(true)
+  }
+
+  const abrirModalEditarActivo = (activo: any) => {
+    setActivoEditando(activo)
+    setFormEditarActivo({
+      descripcion: activo.descripcion,
+      sede: activo.sede,
+      centroCosto: activo.centroCosto,
+      ubicacionFisica: activo.ubicacionFisica,
+      usuarioFinal: activo.usuarioFinal,
+      nroSerie: activo.nroSerie,
+      marca: activo.marca,
+      estadoConserv: activo.estadoConserv,
+      estadoUso: activo.estadoUso,
+      modelo: activo.modelo,
+      caracteristicas: activo.caracteristicas,
+    })
+    setShowEditarActivoModal(true)
+  }
+
+  const handleInputEditarActivo = (field: string, value: string) => {
+    setFormEditarActivo({ ...formEditarActivo, [field]: value })
+  }
+
+  const handleSubmitEditarActivo = (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    // Actualizar el activo en la lista
+    setTodosLosActivos(activos => 
+      activos.map(activo => 
+        activo.item === activoEditando.item 
+          ? { 
+              ...activo, 
+              descripcion: formEditarActivo.descripcion,
+              sede: formEditarActivo.sede,
+              centroCosto: formEditarActivo.centroCosto,
+              ubicacionFisica: formEditarActivo.ubicacionFisica,
+              usuarioFinal: formEditarActivo.usuarioFinal,
+              nroSerie: formEditarActivo.nroSerie,
+              marca: formEditarActivo.marca,
+              estadoConserv: formEditarActivo.estadoConserv,
+              estadoUso: formEditarActivo.estadoUso,
+              modelo: formEditarActivo.modelo,
+              caracteristicas: formEditarActivo.caracteristicas,
+            }
+          : activo
+      )
+    )
+    
+    setShowEditarActivoModal(false)
+    setActivoEditando(null)
+    alert("Activo actualizado exitosamente")
   }
 
   // Add new state for the seleccionar inventario modal
@@ -3435,9 +3523,12 @@ function InventarioModule() {
                   <td className="p-2">{activo.codigoBarraInvAnterior}</td>
                   <td className="p-2">{activo.descripcion}</td>
                   <td className="p-2 text-center">{activo.tipoVerif}</td>
-                  <td className="p-2">
+                  <td className="p-2 space-x-2">
                     <Button size="sm" variant="outline" onClick={() => abrirModalActivoFijo(activo)}>
                       Ver Activo Fijo
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => abrirModalEditarActivo(activo)}>
+                      Editar
                     </Button>
                   </td>
                 </tr>
@@ -3470,6 +3561,174 @@ function InventarioModule() {
           </Button>
         </div>
       </div>
+
+      {/* Modal de Editar Activo Fijo */}
+      {showEditarActivoModal && activoEditando && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="bg-blue-600 text-white p-3 flex justify-between items-center rounded-t-lg">
+              <h2 className="font-bold text-lg">Editar Activo Fijo</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowEditarActivoModal(false)}
+                className="text-white hover:bg-blue-700 text-xl font-bold w-8 h-8 p-0"
+              >
+                ✕
+              </Button>
+            </div>
+
+            <div className="p-6">
+              <form onSubmit={handleSubmitEditarActivo} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Item</Label>
+                    <Input value={`MP${String(activoEditando.item).padStart(6, "0")}`} readOnly className="bg-gray-100" />
+                  </div>
+                  <div>
+                    <Label>Correlativo</Label>
+                    <Input value="00003247" readOnly className="bg-gray-100" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Cód. Patrimonial</Label>
+                    <Input value={activoEditando.codigoPatrimonial} readOnly className="bg-gray-100" />
+                  </div>
+                  <div>
+                    <Label>Código Barra / Inv. Anterior</Label>
+                    <Input value={activoEditando.codigoBarraInvAnterior} readOnly className="bg-gray-100" />
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Descripción *</Label>
+                  <Input
+                    value={formEditarActivo.descripcion}
+                    onChange={(e) => handleInputEditarActivo("descripcion", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label>Sede *</Label>
+                  <Input
+                    value={formEditarActivo.sede}
+                    onChange={(e) => handleInputEditarActivo("sede", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label>Centro Costo *</Label>
+                  <Input
+                    value={formEditarActivo.centroCosto}
+                    onChange={(e) => handleInputEditarActivo("centroCosto", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label>Ubic. Física *</Label>
+                  <Input
+                    value={formEditarActivo.ubicacionFisica}
+                    onChange={(e) => handleInputEditarActivo("ubicacionFisica", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label>Usuario Final *</Label>
+                  <Input
+                    value={formEditarActivo.usuarioFinal}
+                    onChange={(e) => handleInputEditarActivo("usuarioFinal", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Nro Serie *</Label>
+                    <Input
+                      value={formEditarActivo.nroSerie}
+                      onChange={(e) => handleInputEditarActivo("nroSerie", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label>Estado Conserv *</Label>
+                    <select
+                      className="w-full border rounded px-3 py-2"
+                      value={formEditarActivo.estadoConserv}
+                      onChange={(e) => handleInputEditarActivo("estadoConserv", e.target.value)}
+                      required
+                    >
+                      <option value="Bueno">Bueno</option>
+                      <option value="Regular">Regular</option>
+                      <option value="Malo">Malo</option>
+                      <option value="Muy Malo">Muy Malo</option>
+                      <option value="Nuevo">Nuevo</option>
+                      <option value="Chatarra">Chatarra</option>
+                      <option value="RAEE">RAEE</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Marca *</Label>
+                    <Input
+                      value={formEditarActivo.marca}
+                      onChange={(e) => handleInputEditarActivo("marca", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label>Estado Uso *</Label>
+                    <select
+                      className="w-full border rounded px-3 py-2"
+                      value={formEditarActivo.estadoUso}
+                      onChange={(e) => handleInputEditarActivo("estadoUso", e.target.value)}
+                      required
+                    >
+                      <option value="Si">Si</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Modelo *</Label>
+                  <Input
+                    value={formEditarActivo.modelo}
+                    onChange={(e) => handleInputEditarActivo("modelo", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label>Características *</Label>
+                  <textarea
+                    className="w-full border rounded px-3 py-2"
+                    rows={3}
+                    value={formEditarActivo.caracteristicas}
+                    onChange={(e) => handleInputEditarActivo("caracteristicas", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="flex justify-end gap-4 pt-4 border-t">
+                  <Button type="button" variant="outline" onClick={() => setShowEditarActivoModal(false)}>
+                    Cancelar
+                  </Button>
+                  <Button type="submit">Guardar Cambios</Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal de Registrar Inventario */}
       {showRegistrarInventarioModal && (
@@ -3577,7 +3836,7 @@ function InventarioModule() {
                     <td className="border border-gray-300 p-2">
                       <input
                         type="text"
-                        value="112228220002"
+                        value={activoSeleccionado.codigoPatrimonial}
                         readOnly
                         className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
                       />
@@ -3607,7 +3866,7 @@ function InventarioModule() {
                     <td className="border border-gray-300 p-2">
                       <input
                         type="text"
-                        value="P148265"
+                        value={activoSeleccionado.codigoBarraInvAnterior}
                         readOnly
                         className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
                       />
@@ -3626,7 +3885,7 @@ function InventarioModule() {
                       <div className="flex items-center gap-2">
                         <input
                           type="text"
-                          value="59E0122QJ16"
+                          value={activoSeleccionado.nroSerie}
                           readOnly
                           className="flex-1 h-6 text-xs px-1 bg-gray-100 border-0"
                         />
@@ -3634,7 +3893,7 @@ function InventarioModule() {
                         <select
                           disabled
                           className="h-6 text-xs px-1 bg-gray-100 border border-gray-300"
-                          defaultValue="Bueno"
+                          defaultValue={activoSeleccionado.estadoConserv}
                         >
                           <option value="BUENO">BUENO</option>
                           <option value="REGULAR">REGULAR</option>
@@ -3654,7 +3913,7 @@ function InventarioModule() {
                     <td className="border border-gray-300 p-2">
                       <input
                         type="text"
-                        value="DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL"
+                        value={activoSeleccionado.descripcion}
                         readOnly
                         className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
                       />
@@ -3664,7 +3923,7 @@ function InventarioModule() {
                       <div className="flex items-center gap-2">
                         <input
                           type="text"
-                          value="LG"
+                          value={activoSeleccionado.marca}
                           readOnly
                           className="flex-1 h-6 text-xs px-1 bg-gray-100 border-0"
                         />
@@ -3672,7 +3931,7 @@ function InventarioModule() {
                         <select
                           disabled
                           className="h-6 text-xs px-1 bg-gray-100 border border-gray-300"
-                          defaultValue="Si"
+                          defaultValue={activoSeleccionado.estadoUso}
                         >
                           <option value="Si">Si</option>
                           <option value="No">No</option>
@@ -3683,7 +3942,7 @@ function InventarioModule() {
                     <td className="border border-gray-300 p-2">
                       <input
                         type="text"
-                        value="S/M"
+                        value={activoSeleccionado.modelo}
                         readOnly
                         className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
                       />
@@ -3696,7 +3955,7 @@ function InventarioModule() {
                     <td className="border border-gray-300 p-2">
                       <input
                         type="text"
-                        value="ARCHIVO CENTRAL"
+                        value={activoSeleccionado.sede}
                         readOnly
                         className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
                       />
@@ -3714,7 +3973,7 @@ function InventarioModule() {
                     <td className="border border-gray-300 p-2">
                       <input
                         type="text"
-                        value="01.06-ARCHIVO"
+                        value={activoSeleccionado.centroCosto}
                         readOnly
                         className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
                       />
@@ -3723,7 +3982,7 @@ function InventarioModule() {
                     <td className="border border-gray-300 p-2" colSpan={3}>
                       <input
                         type="text"
-                        value="DESHUMEDECEDOR PARA AMBIENTE TIPO COMERCIAL, M..."
+                        value={activoSeleccionado.caracteristicas}
                         readOnly
                         className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
                       />
@@ -3736,7 +3995,7 @@ function InventarioModule() {
                     <td className="border border-gray-300 p-2">
                       <input
                         type="text"
-                        value="2004-ARCHIVO - PISO 2"
+                        value={activoSeleccionado.ubicacionFisica}
                         readOnly
                         className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
                       />
@@ -3758,7 +4017,7 @@ function InventarioModule() {
                     <td className="border border-gray-300 p-2">
                       <input
                         type="text"
-                        value="GUERRERO ESCOBEDO JHONY GERHARD"
+                        value={activoSeleccionado.usuarioFinal}
                         readOnly
                         className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
                       />
@@ -3772,7 +4031,7 @@ function InventarioModule() {
                     <td className="border border-gray-300 p-2">
                       <input
                         type="text"
-                        value="GUERRERO ESCOBEDO JHONY GERHARD"
+                        value={activoSeleccionado.usuarioFinal}
                         readOnly
                         className="w-full h-6 text-xs px-1 bg-gray-100 border-0"
                       />
